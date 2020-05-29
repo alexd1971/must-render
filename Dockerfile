@@ -13,6 +13,8 @@ WORKDIR /opt/app
 RUN apk add --no-cache gmp libffi
 
 COPY --from=build /root/.local/bin/must-render .
+COPY --from=build /tmp/build/templates ./templates
+COPY --from=build /tmp/build/config.yaml ./config.yaml
 EXPOSE 7777
 CMD []
 ENTRYPOINT ["/opt/app/must-render"]
