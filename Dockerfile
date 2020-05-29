@@ -1,7 +1,7 @@
 FROM alpine as build
 
 WORKDIR /tmp/build
-RUN apk add curl ghc=~8.6.5 musl-dev zlib-dev
+RUN apk add curl ghc=~8.8.3 musl-dev zlib-dev
 RUN curl -sSL https://get.haskellstack.org/ | sh
 COPY . /tmp/build/
 
