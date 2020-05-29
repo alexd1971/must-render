@@ -1,0 +1,82 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: ce8d41d5d065b5ba02e11545f34f33bb2e4b602e738af00f2bdeab3e9f003a5b
+
+name:           must-render
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/mustache-doc-build#readme>
+author:         Aleksey Danilevsky
+maintainer:     alexey.danilevsky@gmail.com
+copyright:      2020 Aleksey Danilevsky
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+library
+  exposed-modules:
+      Config
+      RequestHandler
+      Templates
+  other-modules:
+      Paths_must_render
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , http-types
+    , mustache
+    , text
+    , utf8-string
+    , wai
+    , warp
+    , yaml
+  default-language: Haskell2010
+
+executable must-render
+  main-is: Main.hs
+  other-modules:
+      Paths_must_render
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , http-types
+    , must-render
+    , mustache
+    , text
+    , utf8-string
+    , wai
+    , warp
+    , yaml
+  default-language: Haskell2010
+
+test-suite must-render-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_must_render
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , http-types
+    , must-render
+    , mustache
+    , text
+    , utf8-string
+    , wai
+    , warp
+    , yaml
+  default-language: Haskell2010
