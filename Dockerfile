@@ -12,7 +12,7 @@ RUN mkdir -p /opt/app
 WORKDIR /opt/app
 RUN apk add --no-cache gmp libffi
 
-COPY --from=build /root/.local/bin/mustache-docs .
+COPY --from=build /root/.local/bin/must-render .
 EXPOSE 7777
 CMD []
-ENTRYPOINT ["/opt/app/mustache-docs"]
+ENTRYPOINT ["/opt/app/must-render"]
