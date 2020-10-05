@@ -24,7 +24,7 @@ main = do
   case parsedConfig of
     Left  exception -> print exception
     Right config    -> do
-      templates <- compileTemplates ["./templates"] $ templates config
+      tmplts <- compileTemplates ["./templates"] $ templates config
       let port = 7777
       putStrLn $ "Listening on port " ++ show port
-      run port $ handler templates
+      run port $ handler tmplts
