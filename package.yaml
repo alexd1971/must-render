@@ -23,6 +23,7 @@ dependencies:
   - base >= 4.7 && < 5
   - http-types
   - utf8-string
+  - mtl
   - mustache
   - text
   - wai

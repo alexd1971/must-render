@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ce8d41d5d065b5ba02e11545f34f33bb2e4b602e738af00f2bdeab3e9f003a5b
+-- hash: 0015809473980d2f25e4b97c9a337c2aa041c210962dc07c964024d94624f34c
 
 name:           must-render
 version:        0.1.0.0
@@ -32,6 +32,7 @@ library
       aeson
     , base >=4.7 && <5
     , http-types
+    , mtl
     , mustache
     , text
     , utf8-string
@@ -51,6 +52,7 @@ executable must-render
       aeson
     , base >=4.7 && <5
     , http-types
+    , mtl
     , must-render
     , mustache
     , text
@@ -72,6 +74,7 @@ test-suite must-render-test
       aeson
     , base >=4.7 && <5
     , http-types
+    , mtl
     , must-render
     , mustache
     , text

@@ -2,6 +2,7 @@
 
 module Main where
 
+import           Control.Monad.Reader           ( runReader )
 import           Data.Yaml                      ( ParseException
                                                 , decodeFileEither
                                                 )
@@ -24,7 +25,7 @@ main = do
   case parsedConfig of
     Left  exception -> print exception
     Right config    -> do
-      tmplts <- compileTemplates ["./templates"] $ templates config
+      ts <- compileTemplates ["./templates"] $ templates config
       let port = 7777
       putStrLn $ "Listening on port " ++ show port
-      run port $ handler tmplts
+      run port $ runReader handler ts

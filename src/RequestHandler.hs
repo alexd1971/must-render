@@ -2,6 +2,9 @@
 
 module RequestHandler where
 
+import           Control.Monad.Reader           ( Reader
+                                                , ask
+                                                )
 import           Data.Aeson                     ( Value(Null)
                                                 , decode
                                                 )
@@ -42,20 +45,22 @@ buildResponse status text =
   responseLBS status [(hContentType, "text/plain")] $ fromString text
 
 -- | Обработчик запросов к сервису
-handler :: [Template] -> Application
-handler templates req respond = if requestMethod req /= "POST"
-  then respond $ buildResponse status400 "Use POST-request"
-  else
-    let maybeTemplate = do
-          name <- getTemplateName req
-          findTemplate templates name
-    in  case maybeTemplate of
-          Nothing -> respond $ buildResponse
-            status404
-            "Template not found: check if it exists and present in query"
-          Just template -> do
-            body <- strictRequestBody req
-            let values = fromMaybe Null $ decode body
-            respond $ buildResponse status200 $ unpack $ substitute
-              template
-              (mFromJSON values)
+handler :: Reader [Template] Application
+handler = do
+  templates <- ask
+  return $ \req respond -> if requestMethod req /= "POST"
+    then respond $ buildResponse status400 "Use POST-request"
+    else
+      let maybeTemplate = do
+            name <- getTemplateName req
+            findTemplate templates name
+      in  case maybeTemplate of
+            Nothing -> respond $ buildResponse
+              status404
+              "Template not found: check if it exists and present in query"
+            Just template -> do
+              body <- strictRequestBody req
+              let values = fromMaybe Null $ decode body
+              respond $ buildResponse status200 $ unpack $ substitute
+                template
+                (mFromJSON values)
