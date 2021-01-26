@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0015809473980d2f25e4b97c9a337c2aa041c210962dc07c964024d94624f34c
+-- hash: 88197e4f02ba98df137fa0ed9dace44e97b92fa8e2f0c9b42282b217e78eef3b
 
 name:           must-render
 version:        0.1.0.0
@@ -22,7 +22,9 @@ extra-source-files:
 library
   exposed-modules:
       Config
-      RequestHandler
+      DataTypes
+      Handler
+      Service
       Templates
   other-modules:
       Paths_must_render
@@ -31,6 +33,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , fsnotify
     , http-types
     , mtl
     , mustache
@@ -51,6 +54,7 @@ executable must-render
   build-depends:
       aeson
     , base >=4.7 && <5
+    , fsnotify
     , http-types
     , mtl
     , must-render
@@ -73,6 +77,7 @@ test-suite must-render-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , fsnotify
     , http-types
     , mtl
     , must-render
