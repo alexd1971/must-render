@@ -1,31 +1,39 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Templates
-  ( compileTemplates
-  , findTemplate
+  ( Templates,
+    cacheTemplates,
+    hasName,
+    templatesDir,
   )
 where
 
-import           Data.Maybe                     ( catMaybes
-                                                , listToMaybe
-                                                )
-import           Text.Mustache                  ( Template
-                                                , automaticCompile
-                                                , name
-                                                )
+import Config (Config (templates))
+import Control.Concurrent.MVar (MVar, putMVar, tryTakeMVar)
+import Control.Monad.Reader (MonadTrans (lift), ReaderT, asks)
+import Data.Maybe (catMaybes)
+import Text.Mustache (Template, automaticCompile, name)
 
--- | Компилирует шаблоны
--- Поиск шаблонов с именами из `templateNames` происходит по каталогам
--- `searchPaths`
-compileTemplates :: [FilePath] -> [FilePath] -> IO [Template]
-compileTemplates searchPaths templateNames = do
-  templates <- mapM (compile searchPaths) templateNames
-  return $ catMaybes templates
+templatesDir :: FilePath
+templatesDir = "./templates"
+
+type Templates = MVar [Template]
+
+{-
+  Компилирует шаблоны
+  Поиск шаблонов с именами из `templateNames` происходит по каталогам
+-}
+cacheTemplates :: Templates -> ReaderT Config IO ()
+cacheTemplates cacheMVar = do
+  templateNames <- asks templates
+  templates <- catMaybes <$> lift (mapM compile templateNames)
+  lift $ tryTakeMVar cacheMVar
+  lift $ putMVar cacheMVar templates
 
 -- | Компилирует один шаблон
-compile :: [FilePath] -> FilePath -> IO (Maybe Template)
-compile searchPaths templateName = do
-  compiled <- automaticCompile searchPaths templateName
+compile :: FilePath -> IO (Maybe Template)
+compile templateName = do
+  compiled <- automaticCompile [templatesDir] templateName
   case compiled of
     Left err -> do
       print err
@@ -35,8 +43,3 @@ compile searchPaths templateName = do
 -- | Проверяет соответствует ли имя шаблона переданной строке
 hasName :: String -> Template -> Bool
 hasName templateName template = name template == templateName
-
--- | Ищет шаблон по имени
-findTemplate :: [Template] -> String -> Maybe Template
-findTemplate templates templateName =
-  listToMaybe . (filter $ hasName templateName) $ templates

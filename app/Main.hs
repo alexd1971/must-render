@@ -2,30 +2,30 @@
 
 module Main where
 
-import           Control.Monad.Reader           ( runReader )
-import           Data.Yaml                      ( ParseException
-                                                , decodeFileEither
-                                                )
-import           Network.Wai.Handler.Warp       ( run )
-
-import           System.IO                      ( hSetBuffering
-                                                , stdout
-                                                , BufferMode(NoBuffering)
-                                                )
-
-import           Config                         ( Config(templates) )
-import           RequestHandler                 ( handler )
-import           Templates                      ( compileTemplates )
+import Control.Concurrent (forkIO, isEmptyMVar, newEmptyMVar, newMVar, takeMVar, withMVar)
+import Control.Monad.Reader (when, ReaderT (runReaderT))
+import Service (serviceRootDir, initialize, runService)
+import System.Exit (exitFailure)
+import System.FSNotify (watchTree, withManager)
+import System.IO (BufferMode (NoBuffering), hSetBuffering, stdout)
 
 main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
-  parsedConfig <-
-    decodeFileEither "config.yaml" :: IO (Either ParseException Config)
-  case parsedConfig of
-    Left  exception -> print exception
-    Right config    -> do
-      ts <- compileTemplates ["./templates"] $ templates config
-      let port = 7777
-      putStrLn $ "Listening on port " ++ show port
-      run port $ runReader handler ts
+  templatesCache <- newEmptyMVar
+  parseException <- newEmptyMVar
+  let serviceState = (templatesCache, parseException)
+  forkIO $ runReaderT runService serviceState
+  lock <- newMVar ()
+  withManager $ \mgr -> do
+    watchTree
+      mgr
+      serviceRootDir
+      (const True)
+      ( \_ -> do
+          isNotLocked <- not <$> isEmptyMVar lock
+          when isNotLocked $ withMVar lock (\_ -> runReaderT initialize serviceState)
+      )
+    exception <- takeMVar parseException
+    print exception
+    exitFailure
