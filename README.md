@@ -3,13 +3,13 @@
 ## Запуск сервиса
 
 ```
-mkdir -p must-render/templates
+mkdir -p must-render/conf/templates
 cd must-render
 ```
 
-- В директории `must-render/templates` размещаем файлы шаблонов.
+- В директории `must-render/conf/templates` размещаем файлы шаблонов.
 
-- В директории `must-render` создаем файл `config.yaml` следующего содержания:
+- В директории `must-render/conf` создаем файл `config.yaml` следующего содержания:
 
 ```yaml
 templates:
@@ -29,8 +29,7 @@ services:
     image: <image>
     container_name: must-render
     volumes:
-      - ./templates:/opt/app/templates
-      - ./config.yaml:/opt/app/config.yaml
+      - ./conf:/opt/app/conf
     ports:
       - 7777:7777 # Если нужно, то пробрасываем порт 7777 на хост
 ```

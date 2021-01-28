@@ -1,15 +1,12 @@
 module Service where
 
 import Config (parseConfig)
-import Control.Concurrent ( isEmptyMVar, putMVar )
+import Control.Concurrent (isEmptyMVar, putMVar)
 import Control.Monad.Reader (ReaderT (runReaderT), asks, lift, when)
 import DataTypes (ServiceState)
 import Handler (mkHandler)
 import Network.Wai.Handler.Warp (run)
 import Templates (cacheTemplates)
-
-serviceRootDir :: FilePath
-serviceRootDir = "./"
 
 -- | Запускает сервис
 runService :: ReaderT ServiceState IO ()

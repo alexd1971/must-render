@@ -10,8 +10,11 @@ newtype Config = Config {templates :: [String]} deriving (Generic)
 
 instance FromJSON Config
 
+configRoot :: FilePath
+configRoot = "./conf"
+
 configFile :: FilePath
-configFile = "config.yaml"
+configFile = configRoot <> "/config.yaml"
 
 type ConfigParseResult = Either ParseException Config
 

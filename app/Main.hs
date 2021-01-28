@@ -2,9 +2,10 @@
 
 module Main where
 
+import Config (configRoot)
 import Control.Concurrent (forkIO, isEmptyMVar, newEmptyMVar, newMVar, takeMVar, withMVar)
-import Control.Monad.Reader (when, ReaderT (runReaderT))
-import Service (serviceRootDir, initialize, runService)
+import Control.Monad.Reader (ReaderT (runReaderT), when)
+import Service (initialize, runService)
 import System.Exit (exitFailure)
 import System.FSNotify (watchTree, withManager)
 import System.IO (BufferMode (NoBuffering), hSetBuffering, stdout)
@@ -20,7 +21,7 @@ main = do
   withManager $ \mgr -> do
     watchTree
       mgr
-      serviceRootDir
+      configRoot
       (const True)
       ( \_ -> do
           isNotLocked <- not <$> isEmptyMVar lock

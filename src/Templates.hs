@@ -8,14 +8,14 @@ module Templates
   )
 where
 
-import Config (Config (templates))
+import Config (configRoot, Config (templates))
 import Control.Concurrent.MVar (MVar, putMVar, tryTakeMVar)
 import Control.Monad.Reader (MonadTrans (lift), ReaderT, asks)
 import Data.Maybe (catMaybes)
 import Text.Mustache (Template, automaticCompile, name)
 
 templatesDir :: FilePath
-templatesDir = "./templates"
+templatesDir = configRoot <> "/templates"
 
 type Templates = MVar [Template]
 
