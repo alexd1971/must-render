@@ -1,13 +1,13 @@
-FROM alpine:3.11 as build
+FROM alpine:3.13 as build
 
 WORKDIR /tmp/build
-RUN apk add curl ghc=~8.6.5 musl-dev zlib-dev
+RUN apk add curl ghc musl-dev zlib-dev
 RUN curl -sSL https://get.haskellstack.org/ | sh
 COPY . /tmp/build/
 
 RUN stack build --system-ghc --copy-bins
 
-FROM alpine:3.11 as app
+FROM alpine:3.13 as app
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 RUN apk add --no-cache gmp libffi
